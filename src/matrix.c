@@ -23,103 +23,162 @@ const char *linalg_version(void) { return "0.1.0"; }
  * ==========================================================================*/
 
 Mat *mat_create(int rows, int cols) {
-    /* TODO: validate rows/cols > 0; malloc the Mat and its rows*cols data
-     * buffer (uninitialised is fine here). Free partial allocations on
-     * failure and return NULL. */
-    (void)rows; (void)cols;
-    return NULL;
+    if (rows <= 0 || cols <= 0) {
+        return NULL;
+    }
+    Mat *m = malloc(sizeof(Mat));
+    if (!m) return NULL;
+    double *data = malloc((size_t)rows * cols * sizeof(double));
+    if (!data) {
+        free(m);
+        return NULL;
+    }
+    m->rows = rows;
+    m->cols = cols;
+    m->data = data;
+    return m;
 }
 
 Mat *mat_zeros(int rows, int cols) {
-    /* TODO: mat_create then zero the buffer (memset or loop). */
-    (void)rows; (void)cols;
-    return NULL;
+    Mat *m = mat_create(rows, cols);
+    if (!m) return NULL;
+    memset(m->data, 0, (size_t)rows * cols * sizeof(double));
+    return m;
 }
 
 Mat *mat_identity(int n) {
-    /* TODO: n x n zeros with 1.0 on the diagonal. */
-    (void)n;
-    return NULL;
+    Mat *m = mat_zeros(n, n);
+    if (!m) return NULL;
+    for (int i = 0; i < n; i++) {
+        m->data[i * n + i] = 1.0;
+    }
+    return m;
 }
 
 Mat *mat_from_array(int rows, int cols, const double *data) {
-    /* TODO: mat_create then memcpy rows*cols doubles from data (row-major). */
-    (void)rows; (void)cols; (void)data;
-    return NULL;
+    if (!data) return NULL;
+    Mat *m = mat_create(rows, cols);
+    if (!m) return NULL;
+    memcpy(m->data, data, (size_t)rows * cols * sizeof(double));
+    return m;
 }
 
 Mat *mat_copy(const Mat *a) {
-    /* TODO: build a new matrix with the same shape and contents as a. */
-    (void)a;
-    return NULL;
+    if (!a) return NULL;
+    Mat *m = mat_create(a->rows, a->cols);
+    if (!m) return NULL;
+    memcpy(m->data, a->data, (size_t)a->rows * a->cols * sizeof(double));
+    return m;
 }
 
 void mat_free(Mat *m) {
-    /* TODO: free m->data then m (guard against NULL). */
-    (void)m;
+    if (!m) return;
+    free(m->data);
+    free(m);
 }
 
 int mat_rows(const Mat *m) {
-    /* TODO */
-    (void)m;
-    return 0;
+    if (!m) return 0;
+    return m->rows;
 }
 
 int mat_cols(const Mat *m) {
-    /* TODO */
-    (void)m;
-    return 0;
+    if (!m) return 0;
+    return m->cols;
 }
 
 double mat_get(const Mat *m, int i, int j) {
-    /* TODO: bounds-check; return NAN if out of range, else element (i,j). */
-    (void)m; (void)i; (void)j;
-    return NAN;
+    if (!m) return NAN;
+    if (i < 0 || i >= m->rows || j < 0 || j >= m->cols) return NAN;
+    return m->data[i * m->cols + j];
 }
 
 void mat_set(Mat *m, int i, int j, double v) {
-    /* TODO: bounds-check; write element (i,j). */
-    (void)m; (void)i; (void)j; (void)v;
+    if (!m) return;
+    if (i < 0 || i >= m->rows || j < 0 || j >= m->cols) return;
+    m->data[i * m->cols + j] = v;
 }
 
 void mat_to_array(const Mat *m, double *out) {
-    /* TODO: copy rows*cols elements (row-major) into out. */
-    (void)m; (void)out;
+    if (!m || !out) return;
+    memcpy(out, m->data, (size_t)m->rows * m->cols * sizeof(double));
 }
 
 Mat *mat_add(const Mat *a, const Mat *b) {
-    /* TODO: shape-check, then element-wise sum into a new matrix. */
-    (void)a; (void)b;
-    return NULL;
+    if (!a || !b) return NULL;
+    if (a->rows != b->rows || a->cols != b->cols) return NULL;
+    Mat *result = mat_create(a->rows, a->cols);
+    if (!result) return NULL;
+    for (int i = 0; i < a->rows; i++) {
+        for (int j = 0; j < a->cols; j++) {
+            result->data[i * a->cols + j] = a->data[i * a->cols + j] + b->data[i * b->cols + j];
+        }
+    }
+    return result;
 }
 
 Mat *mat_sub(const Mat *a, const Mat *b) {
-    /* TODO: element-wise a - b. */
-    (void)a; (void)b;
-    return NULL;
+    if (!a || !b) return NULL;
+    if (a->rows != b->rows || a->cols != b->cols) return NULL;
+    Mat *result = mat_create(a->rows, a->cols);
+    if (!result) return NULL;
+    for (int i = 0; i < a->rows; i++) {
+        for (int j = 0; j < a->cols; j++) {
+            result->data[i * a->cols + j] = a->data[i * a->cols + j] - b->data[i * b->cols + j];
+        }
+    }
+    return result;
 }
 
 Mat *mat_scale(const Mat *a, double s) {
-    /* TODO: multiply every element by s into a new matrix. */
-    (void)a; (void)s;
-    return NULL;
+    if (!a) return NULL;
+    Mat *result = mat_create(a->rows, a->cols);
+    if (!result) return NULL;
+    for (int i = 0; i < a->rows; i++) {
+        for (int j = 0; j < a->cols; j++) {
+            result->data[i * a->cols + j] = a->data[i * a->cols + j] * s;
+        }
+    }
+    return result;
 }
 
 Mat *mat_mul(const Mat *a, const Mat *b) {
-    /* TODO: matrix product. Requires a->cols == b->rows; result is
-     * a->rows x b->cols. Start the result at zero and accumulate. */
-    (void)a; (void)b;
-    return NULL;
+    if (!a || !b) return NULL;
+    if (a->cols != b->rows) return NULL;
+    Mat *result = mat_create(a->rows, b->cols);
+    if (!result) return NULL;
+    for (int i = 0; i < a->rows; i++) {
+        for (int j = 0; j < b->cols; j++) {
+            double sum = 0.0;
+            for (int k = 0; k < a->cols; k++) {
+                sum += a->data[i * a->cols + k] * b->data[k * b->cols + j];
+            }
+            result->data[i * b->cols + j] = sum;
+        }
+    }
+    return result;
 }
 
 Mat *mat_transpose(const Mat *a) {
-    /* TODO: result (i,j) = a (j,i). */
-    (void)a;
-    return NULL;
+    if (!a) return NULL;
+    Mat *result = mat_create(a->cols, a->rows);
+    if (!result) return NULL;
+    for (int i = 0; i < a->rows; i++) {
+        for (int j = 0; j < a->cols; j++) {
+            result->data[j * a->rows + i] = a->data[i * a->cols + j];
+        }
+    }
+    return result;
 }
 
 int mat_equal(const Mat *a, const Mat *b, double tol) {
-    /* TODO: 1 if same shape and every |a-b| <= tol, else 0. */
-    (void)a; (void)b; (void)tol;
-    return 0;
+    if (!a || !b) return 0;
+    if (a->rows != b->rows || a->cols != b->cols) return 0;
+    for (int i = 0; i < a->rows; i++) {
+        for (int j = 0; j < a->cols; j++) {
+            double diff = fabs(a->data[i * a->cols + j] - b->data[i * b->cols + j]);
+            if (diff > tol) return 0;
+        }
+    }
+    return 1;
 }
