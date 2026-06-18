@@ -1,0 +1,20 @@
+# build output
+build/
+out/
+install/
+
+# compiled artifacts
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.exe
+
+# editor / OS cruft
+.vscode/
+.idea/
+*.swp
+.DS_Store
