@@ -36,5 +36,5 @@ The compiled library lands in `build/bin/`.
 The function bodies start as stubs (search for `TODO`); the tests define the
 expected behavior. Implement until `ctest` is green.
 
-[linalg-viz]: ../linalg-viz
-[linalg-py]: ../linalg-py
+[linalg-viz]: https://github.com/kizdude/linalg-viz
+[linalg-py]: https://github.com/kizdude/linalg-py
