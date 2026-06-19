@@ -3,10 +3,7 @@
 #include <math.h>
 
 /* Fixed-size graphics math. Convention: column vectors, column-major Mat4
- * storage (m[col*4 + row]) to match OpenGL. Implement these as we get to them.
- *
- * The _out pointer variants at the bottom should just forward to the
- * by-value versions once those work. */
+ * storage (m[col*4 + row]) to match OpenGL. */
 
 /* ---------- Vec3 ---------- */
 Vec3 vec3_add(Vec3 a, Vec3 b) {
@@ -187,7 +184,7 @@ Mat4 quat_to_mat4(Quat q) {
     return r;
 } 
 
-/* ---------- FFI-safe pointer variants (forward to the above) ---------- */
+/* ---------- FFI-safe pointer variants ---------- */
 void mat4_identity_out(Mat4 *out) {
     if (out) *out = mat4_identity();
 }
