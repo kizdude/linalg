@@ -3,8 +3,7 @@
 #include <stddef.h>
 #include <math.h>
 
-/* A "vector" is just an Nx1 (or 1xN) Mat, so you can lean on the matrix
- * routines. These stubs add the vector-only operations. */
+/* A "vector" is just an Nx1 (or 1xN) Mat. */
 static int vec_len(const Mat *v) {
     if (!v) return -1;
     int rows = mat_rows(v), cols = mat_cols(v);
