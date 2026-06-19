@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-/* Decompositions and solvers. These are the hardest functions in the library;
- * we'll work through the algorithms together before you implement them. */
+/* Decompositions and solvers. */
 
 double mat_norm(const Mat *a) {
     if (!a) return NAN;
