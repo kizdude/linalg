@@ -31,10 +31,13 @@ ctest --test-dir build --output-on-failure
 
 The compiled library lands in `build/bin/`.
 
-## Status
+## Consumers
 
-The function bodies start as stubs (search for `TODO`); the tests define the
-expected behavior. Implement until `ctest` is green.
+The library is used by two sibling projects, each pulling it in as a git
+submodule:
+
+- **[linalg-viz]** — an interactive raylib visualizer (C).
+- **[linalg-py]** — Python bindings via ctypes.
 
 [linalg-viz]: https://github.com/kizdude/linalg-viz
 [linalg-py]: https://github.com/kizdude/linalg-py
