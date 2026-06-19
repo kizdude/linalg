@@ -31,6 +31,7 @@ LINALG_API void  mat_free(Mat *m);
 LINALG_API int    mat_rows(const Mat *m);
 LINALG_API int    mat_cols(const Mat *m);
 LINALG_API double mat_get(const Mat *m, int i, int j);
+LINALG_API Mat   *mat_get_col(const Mat *m, int j);
 LINALG_API void   mat_set(Mat *m, int i, int j, double v);
 /* Copies all rows*cols elements (row-major) into out. */
 LINALG_API void   mat_to_array(const Mat *m, double *out);

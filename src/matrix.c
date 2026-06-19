@@ -93,6 +93,17 @@ double mat_get(const Mat *m, int i, int j) {
     return m->data[i * m->cols + j];
 }
 
+Mat *mat_get_col(const Mat *m, int j) {
+    if (!m) return NULL;
+    if (j < 0 || j >= m->cols) return NULL;
+    Mat *col = mat_create(m->rows, 1);
+    if (!col) return NULL;
+    for (int i = 0; i < m->rows; i++) {
+        col->data[i] = m->data[i * m->cols + j];
+    }
+    return col;
+}
+
 void mat_set(Mat *m, int i, int j, double v) {
     if (!m) return;
     if (i < 0 || i >= m->rows || j < 0 || j >= m->cols) return;
@@ -177,8 +188,9 @@ int mat_equal(const Mat *a, const Mat *b, double tol) {
     for (int i = 0; i < a->rows; i++) {
         for (int j = 0; j < a->cols; j++) {
             double diff = fabs(a->data[i * a->cols + j] - b->data[i * b->cols + j]);
-            if (diff > tol) return 0;
+            if (!(diff <= tol)) return 0;
         }
     }
     return 1;
 }
+

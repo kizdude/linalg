@@ -45,9 +45,25 @@ int main(void) {
     Mat *I3 = mat_identity(3);
     CHECK(mat_equal(QtQ, I3, 1e-6), "Q^T Q == I (orthonormal)");
 
+    /* QR on a tall (non-square) matrix: 4x2 -> Q is 4x2, R is 2x2 */
+    double tv[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+    Mat *T = mat_from_array(4, 2, tv);
+    Mat *Qt2 = NULL, *Rt2 = NULL;
+    CHECK(mat_qr(T, &Qt2, &Rt2) == 0, "tall qr succeeds");
+    CHECK(mat_rows(Qt2) == 4 && mat_cols(Qt2) == 2, "tall Q is 4x2");
+    CHECK(mat_rows(Rt2) == 2 && mat_cols(Rt2) == 2, "tall R is 2x2");
+    Mat *QRt = mat_mul(Qt2, Rt2);
+    CHECK(mat_equal(QRt, T, 1e-6), "tall Q R == A");
+    Mat *QtT = mat_transpose(Qt2);
+    Mat *QtQ2 = mat_mul(QtT, Qt2);
+    Mat *I2 = mat_identity(2);
+    CHECK(mat_equal(QtQ2, I2, 1e-6), "tall Q^T Q == I");
+
     mat_free(A); mat_free(B); mat_free(Ainv); mat_free(prod); mat_free(I);
     mat_free(bb); mat_free(x); mat_free(check); mat_free(S);
     mat_free(Q); mat_free(R); mat_free(QR); mat_free(Qt); mat_free(QtQ); mat_free(I3);
+    mat_free(T); mat_free(Qt2); mat_free(Rt2); mat_free(QRt);
+    mat_free(QtT); mat_free(QtQ2); mat_free(I2);
 
     return TEST_END();
 }

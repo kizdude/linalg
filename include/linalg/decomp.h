@@ -12,6 +12,12 @@
 extern "C" {
 #endif
 
+/* Norm of a matrix. */
+LINALG_API double mat_norm(const Mat *a);
+
+/* Dot product of a column from the first matrix and the first column from the second matrix. */
+LINALG_API double mat_dot(const Mat *a, const Mat *b, int col);
+
 /* Determinant of a square matrix via LU. Returns NAN if not square. */
 LINALG_API double mat_determinant(const Mat *a);
 
