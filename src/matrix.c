@@ -4,9 +4,7 @@
 #include <string.h>
 #include <math.h>
 
-/* Dense, row-major storage. Element (i,j) lives at data[i*cols + j].
- * You may change this layout if you implement everything consistently, but
- * row-major keeps mat_from_array / mat_to_array a straight memcpy. */
+/* Dense, row-major storage. Element (i,j) lives at data[i*cols + j]. */
 struct Mat {
     int rows;
     int cols;
@@ -14,13 +12,6 @@ struct Mat {
 };
 
 const char *linalg_version(void) { return "0.1.0"; }
-
-/* ============================================================================
- * Each body below is a stub. Implement them one at a time; run the tests
- * (ctest) to check your work. Contracts are documented in include/linalg/.
- * Reminder: constructors return NULL on bad args / OOM; query functions
- * return a sentinel (NAN / 0) rather than crashing.
- * ==========================================================================*/
 
 Mat *mat_create(int rows, int cols) {
     if (rows <= 0 || cols <= 0) {
